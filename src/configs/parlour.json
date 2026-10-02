@@ -1,0 +1,51 @@
+{
+  "id": "parlour",
+  "name": "Parlour",
+  "labels": { "customer": "Client", "resource": "Station", "service": "Service" },
+  "priorityClasses": [
+    { "id": "appointment", "label": "Appointment", "weight": 40 },
+    { "id": "walkin", "label": "Walk-in", "weight": 0 }
+  ],
+  "resources": [
+    { "id": "wash", "name": "Wash Station", "count": 2 },
+    { "id": "stylist", "name": "Stylist", "count": 4 },
+    { "id": "beautician", "name": "Beautician", "count": 3 },
+    { "id": "billing", "name": "Billing", "count": 1 }
+  ],
+  "services": [
+    {
+      "id": "haircut-facial",
+      "name": "Haircut + Facial",
+      "requirements": [
+        { "id": "booking-id", "label": "Booking ID", "critical": false }
+      ],
+      "steps": [
+        { "id": "wash1", "name": "Hair Wash", "resourceId": "wash", "duration": { "min": 5, "max": 10 }, "after": [] },
+        { "id": "haircut", "name": "Haircut", "resourceId": "stylist", "duration": { "min": 20, "max": 35 }, "after": ["wash1"] },
+        { "id": "facial", "name": "Facial", "resourceId": "beautician", "duration": { "min": 30, "max": 45 }, "after": ["wash1"] },
+        { "id": "bill", "name": "Billing", "resourceId": "billing", "duration": { "min": 2, "max": 4 }, "after": ["haircut", "facial"] }
+      ]
+    },
+    {
+      "id": "hair-colour",
+      "name": "Hair Colour",
+      "requirements": [
+        { "id": "booking-id", "label": "Booking ID", "critical": false },
+        { "id": "patch-test", "label": "Patch Test Done", "critical": true }
+      ],
+      "steps": [
+        { "id": "consult", "name": "Colour Consultation", "resourceId": "stylist", "duration": { "min": 5, "max": 10 }, "after": [] },
+        { "id": "colour", "name": "Colour Application", "resourceId": "stylist", "duration": { "min": 20, "max": 30 }, "after": ["consult"] },
+        { "id": "process", "name": "Processing Wait", "resourceId": "beautician", "duration": { "min": 20, "max": 30 }, "after": ["colour"] },
+        { "id": "wash2", "name": "Wash Out", "resourceId": "wash", "duration": { "min": 5, "max": 10 }, "after": ["process"] },
+        { "id": "style", "name": "Styling", "resourceId": "stylist", "duration": { "min": 15, "max": 25 }, "after": ["wash2"] },
+        { "id": "bill", "name": "Billing", "resourceId": "billing", "duration": { "min": 2, "max": 4 }, "after": ["style"] }
+      ]
+    }
+  ],
+  "settings": {
+    "bottleneckThresholdMin": 15,
+    "agingWeightPerMin": 0.5,
+    "returnVisitPenaltyMin": 60
+  }
+}

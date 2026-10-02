@@ -1,0 +1,60 @@
+{
+  "id": "hospital",
+  "name": "Hospital OPD",
+  "labels": { "customer": "Patient", "resource": "Department", "service": "Treatment" },
+  "priorityClasses": [
+    { "id": "emergency", "label": "Emergency", "weight": 100 },
+    { "id": "senior", "label": "Senior / Disabled", "weight": 30 },
+    { "id": "normal", "label": "Normal", "weight": 0 }
+  ],
+  "resources": [
+    { "id": "registration", "name": "Registration", "count": 2 },
+    { "id": "vitals", "name": "Vitals", "count": 1 },
+    { "id": "doctor", "name": "Doctor", "count": 3 },
+    { "id": "lab", "name": "Lab", "count": 2 },
+    { "id": "pharmacy", "name": "Pharmacy", "count": 2 },
+    { "id": "billing", "name": "Billing", "count": 1 }
+  ],
+  "services": [
+    {
+      "id": "general-opd",
+      "name": "General OPD",
+      "requirements": [
+        { "id": "photo-id", "label": "Photo ID", "critical": true },
+        { "id": "prev-reports", "label": "Previous Reports", "critical": false },
+        { "id": "referral", "label": "Referral Letter", "critical": false }
+      ],
+      "steps": [
+        { "id": "reg", "name": "Registration", "resourceId": "registration", "duration": { "min": 2, "max": 5 }, "after": [] },
+        { "id": "vitals", "name": "Vitals Check", "resourceId": "vitals", "duration": { "min": 3, "max": 6 }, "after": ["reg"] },
+        { "id": "consult", "name": "Doctor Consultation", "resourceId": "doctor", "duration": { "min": 8, "max": 15 }, "after": ["vitals"] },
+        { "id": "pharma", "name": "Pharmacy", "resourceId": "pharmacy", "duration": { "min": 3, "max": 8 }, "after": ["consult"] },
+        { "id": "bill", "name": "Billing", "resourceId": "billing", "duration": { "min": 2, "max": 4 }, "after": ["pharma"] }
+      ]
+    },
+    {
+      "id": "opd-bloodtest",
+      "name": "OPD + Blood Test",
+      "requirements": [
+        { "id": "photo-id", "label": "Photo ID", "critical": true },
+        { "id": "prev-reports", "label": "Previous Reports", "critical": false },
+        { "id": "referral", "label": "Referral Letter", "critical": false },
+        { "id": "fasting", "label": "Fasting (for blood test)", "critical": false }
+      ],
+      "steps": [
+        { "id": "reg", "name": "Registration", "resourceId": "registration", "duration": { "min": 2, "max": 5 }, "after": [] },
+        { "id": "vitals", "name": "Vitals Check", "resourceId": "vitals", "duration": { "min": 3, "max": 6 }, "after": ["reg"] },
+        { "id": "consult1", "name": "Doctor Consultation", "resourceId": "doctor", "duration": { "min": 8, "max": 15 }, "after": ["vitals"] },
+        { "id": "labtest", "name": "Lab Test", "resourceId": "lab", "duration": { "min": 5, "max": 12 }, "after": ["consult1"] },
+        { "id": "consult2", "name": "Doctor Review", "resourceId": "doctor", "duration": { "min": 4, "max": 8 }, "after": ["labtest"] },
+        { "id": "pharma", "name": "Pharmacy", "resourceId": "pharmacy", "duration": { "min": 3, "max": 8 }, "after": ["consult2"] },
+        { "id": "bill", "name": "Billing", "resourceId": "billing", "duration": { "min": 2, "max": 4 }, "after": ["pharma"] }
+      ]
+    }
+  ],
+  "settings": {
+    "bottleneckThresholdMin": 15,
+    "agingWeightPerMin": 0.5,
+    "returnVisitPenaltyMin": 90
+  }
+}

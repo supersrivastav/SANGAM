@@ -1,0 +1,55 @@
+{
+  "id": "janseva",
+  "name": "Jan Seva Kendra",
+  "labels": { "customer": "Citizen", "resource": "Counter", "service": "Service" },
+  "priorityClasses": [
+    { "id": "senior-disabled", "label": "Senior / Disabled", "weight": 40 },
+    { "id": "normal", "label": "Normal", "weight": 0 }
+  ],
+  "resources": [
+    { "id": "helpdesk", "name": "Token / Help Desk", "count": 1 },
+    { "id": "verification", "name": "Document Verification", "count": 2 },
+    { "id": "dataentry", "name": "Data Entry", "count": 2 },
+    { "id": "cashier", "name": "Cashier", "count": 1 },
+    { "id": "issuing", "name": "Issuing Counter", "count": 1 }
+  ],
+  "services": [
+    {
+      "id": "income-cert",
+      "name": "Income Certificate",
+      "requirements": [
+        { "id": "aadhaar", "label": "Aadhaar Card", "critical": true },
+        { "id": "income-proof", "label": "Income Proof", "critical": true },
+        { "id": "address-proof", "label": "Address Proof", "critical": true },
+        { "id": "application-form", "label": "Application Form", "critical": false }
+      ],
+      "steps": [
+        { "id": "help", "name": "Help Desk", "resourceId": "helpdesk", "duration": { "min": 2, "max": 4 }, "after": [] },
+        { "id": "verify", "name": "Document Verification", "resourceId": "verification", "duration": { "min": 5, "max": 10 }, "after": ["help"] },
+        { "id": "entry", "name": "Data Entry", "resourceId": "dataentry", "duration": { "min": 6, "max": 12 }, "after": ["verify"] },
+        { "id": "cash", "name": "Fee Payment", "resourceId": "cashier", "duration": { "min": 2, "max": 4 }, "after": ["entry"] },
+        { "id": "issue", "name": "Certificate Issuing", "resourceId": "issuing", "duration": { "min": 2, "max": 4 }, "after": ["cash"] }
+      ]
+    },
+    {
+      "id": "aadhaar-update",
+      "name": "Aadhaar Update",
+      "requirements": [
+        { "id": "aadhaar", "label": "Aadhaar Card", "critical": true },
+        { "id": "address-proof", "label": "Address Proof", "critical": true },
+        { "id": "application-form", "label": "Application Form", "critical": false }
+      ],
+      "steps": [
+        { "id": "help", "name": "Help Desk", "resourceId": "helpdesk", "duration": { "min": 2, "max": 4 }, "after": [] },
+        { "id": "verify", "name": "Document Verification", "resourceId": "verification", "duration": { "min": 5, "max": 10 }, "after": ["help"] },
+        { "id": "biometric", "name": "Biometric Data Entry", "resourceId": "dataentry", "duration": { "min": 10, "max": 18 }, "after": ["verify"] },
+        { "id": "issue", "name": "Acknowledgement Issue", "resourceId": "issuing", "duration": { "min": 2, "max": 4 }, "after": ["biometric"] }
+      ]
+    }
+  ],
+  "settings": {
+    "bottleneckThresholdMin": 15,
+    "agingWeightPerMin": 0.5,
+    "returnVisitPenaltyMin": 90
+  }
+}

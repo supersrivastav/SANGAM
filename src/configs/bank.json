@@ -1,0 +1,66 @@
+{
+  "id": "bank",
+  "name": "Bank",
+  "labels": { "customer": "Customer", "resource": "Counter", "service": "Service" },
+  "priorityClasses": [
+    { "id": "senior", "label": "Senior Citizen", "weight": 30 },
+    { "id": "normal", "label": "Normal", "weight": 0 }
+  ],
+  "resources": [
+    { "id": "token", "name": "Token Desk", "count": 1 },
+    { "id": "teller", "name": "Teller", "count": 3 },
+    { "id": "account-officer", "name": "Account Officer", "count": 2 },
+    { "id": "loan-officer", "name": "Loan Officer", "count": 1 },
+    { "id": "manager", "name": "Manager", "count": 1 }
+  ],
+  "services": [
+    {
+      "id": "cash-deposit",
+      "name": "Cash Deposit",
+      "requirements": [
+        { "id": "aadhaar", "label": "Aadhaar Card", "critical": true },
+        { "id": "passbook", "label": "Passbook / Account Number", "critical": true }
+      ],
+      "steps": [
+        { "id": "token1", "name": "Get Token", "resourceId": "token", "duration": { "min": 1, "max": 2 }, "after": [] },
+        { "id": "deposit", "name": "Cash Deposit", "resourceId": "teller", "duration": { "min": 2, "max": 4 }, "after": ["token1"] }
+      ]
+    },
+    {
+      "id": "account-opening",
+      "name": "Account Opening",
+      "requirements": [
+        { "id": "aadhaar", "label": "Aadhaar Card", "critical": true },
+        { "id": "pan", "label": "PAN Card", "critical": true },
+        { "id": "address-proof", "label": "Address Proof", "critical": true },
+        { "id": "passport-photo", "label": "Passport Size Photo", "critical": false }
+      ],
+      "steps": [
+        { "id": "token1", "name": "Get Token", "resourceId": "token", "duration": { "min": 1, "max": 2 }, "after": [] },
+        { "id": "form-check", "name": "Form Check", "resourceId": "account-officer", "duration": { "min": 5, "max": 8 }, "after": ["token1"] },
+        { "id": "kyc", "name": "KYC Verification", "resourceId": "account-officer", "duration": { "min": 8, "max": 14 }, "after": ["form-check"] },
+        { "id": "manager-approve", "name": "Manager Approval", "resourceId": "manager", "duration": { "min": 3, "max": 6 }, "after": ["kyc"] },
+        { "id": "passbook-card", "name": "Passbook / Card Issue", "resourceId": "teller", "duration": { "min": 3, "max": 5 }, "after": ["manager-approve"] }
+      ]
+    },
+    {
+      "id": "loan-enquiry",
+      "name": "Loan Enquiry",
+      "requirements": [
+        { "id": "aadhaar", "label": "Aadhaar Card", "critical": true },
+        { "id": "pan", "label": "PAN Card", "critical": true },
+        { "id": "income-proof", "label": "Income Proof", "critical": false }
+      ],
+      "steps": [
+        { "id": "token1", "name": "Get Token", "resourceId": "token", "duration": { "min": 1, "max": 2 }, "after": [] },
+        { "id": "loan-consult", "name": "Loan Consultation", "resourceId": "loan-officer", "duration": { "min": 10, "max": 20 }, "after": ["token1"] },
+        { "id": "manager-review", "name": "Manager Review", "resourceId": "manager", "duration": { "min": 5, "max": 10 }, "after": ["loan-consult"] }
+      ]
+    }
+  ],
+  "settings": {
+    "bottleneckThresholdMin": 15,
+    "agingWeightPerMin": 0.5,
+    "returnVisitPenaltyMin": 90
+  }
+}
